@@ -12,8 +12,54 @@ namespace TaxCalculationService
         {
 
             //  InsertTaxesFromFile();
+            AskForTax("Vilnius", new DateTime(2016,01,01));
 
+        }
 
+        public static DataTable AskForTax(string municipality, DateTime startDate, DateTime endDate = new DateTime())
+        {
+
+            string commandText = "SELECT * FROM Tax WHERE Municipality=@Municipality AND StartDate=@StartDate";
+
+            //end date is optional
+            if (endDate.Ticks != 0)
+                commandText += " AND EndDate=@EndDate";
+
+            DataTable resultDt = new DataTable();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand())
+                    {
+
+                        command.Connection = connection;
+                        command.CommandText = commandText;
+                        command.Parameters.AddWithValue("@Municipality", municipality);
+                        command.Parameters.AddWithValue("@StartDate", startDate).SqlDbType = SqlDbType.DateTime;
+                        if (endDate.Ticks != 0)
+                            command.Parameters.AddWithValue("@EndDate", endDate);
+
+                        try
+                        {
+                            SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
+                            // this will query your database and return the result to your datatable
+                            dataAdapter.Fill(resultDt);
+                        }
+                        catch (SqlException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
+                return resultDt;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Can not open connection. " + ex.Message);
+            }
+            return null;
         }
 
         public static void InsertTaxesFromFile()

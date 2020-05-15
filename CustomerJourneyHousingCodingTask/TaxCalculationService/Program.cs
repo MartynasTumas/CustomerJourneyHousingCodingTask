@@ -5,14 +5,14 @@ using System.Data.SqlClient;
 
 namespace TaxCalculationService
 {
-    class Program
+    public class Program
     {
         private static string connectionString = @"Server=DESKTOP-4DG3M6E\SQLEXPRESS; Database = MunicipalityTax; Trusted_Connection=true;";
-        private static void Main()
+        public static void Main()
         {
 
             //  InsertTaxesFromFile();
-            AskForTax("Vilnius", new DateTime(2016,01,01));
+           // AskForTax("Vilnius", new DateTime(2016,01,01));
 
         }
 
@@ -62,9 +62,9 @@ namespace TaxCalculationService
             return null;
         }
 
-        public static void InsertTaxesFromFile()
+        public static void InsertTaxesFromFile(string path)
         {
-            DataTable dataFromFile = GetDataTableFromCSVFile("TaxData.csv");
+            DataTable dataFromFile = GetDataTableFromCSVFile(path);
 
             try
             {

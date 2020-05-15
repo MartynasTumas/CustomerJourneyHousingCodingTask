@@ -7,9 +7,6 @@ namespace ConsumerService
     {
         static void Main(string[] args)
         {
-            string path = "TaxData.csv";//add path of the file
-            TaxCalculationService.Program.InsertTaxesFromFile(path);
-
             bool run = true;
             while (run)
             {
@@ -49,8 +46,7 @@ namespace ConsumerService
                             }
                         }
 
-
-                        DataTable taxes = TaxCalculationService.Program.AskForTax(municipality, startDate, endDate);
+                        DataTable taxes = TaxCalculationService.Program.ReturnTax(municipality, startDate, endDate);
 
                         if (taxes.Rows.Count < 1)
                         {
@@ -69,11 +65,56 @@ namespace ConsumerService
                         break;
 
                     case "2":
-                        //TODO
+                        Console.WriteLine("Enter path to the file and press enter");
+                        string path = Console.ReadLine();
+                        TaxCalculationService.Program.InsertTaxesFromFile(path);
                         break;
 
                     case "3":
-                        //TODO
+                        Console.WriteLine("Enter municipality and press enter");
+                        municipality = Console.ReadLine();
+                        Console.WriteLine("Enter tax in a format 0.2 and press enter");
+                        double tax;
+                        try
+                        {
+                            tax = double.Parse(Console.ReadLine());
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Invalid tax");
+                            break;
+                        }
+                        Console.WriteLine("Enter tax start date in this format: 2016-12-25 and click enter");
+                        
+                        startDate = new DateTime();
+                        try
+                        {
+                            startDate = DateTime.Parse(Console.ReadLine());
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Incorrect date input.");
+                            break;
+                        }
+
+                        Console.WriteLine("Enter tax end date (if there is no end date, just click enter) in this format: 2016-12-25 and click enter");
+                        endDate = new DateTime();
+                        input = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(input))
+                        {
+                            try
+                            {
+                                endDate = DateTime.Parse(input);
+                            }
+                            catch
+                            {
+                                Console.WriteLine("Incorrect date input.");
+                                break;
+                            }
+                        }
+
+                        TaxCalculationService.Program.InsertNewTax(municipality,tax, startDate, endDate);
+
                         break;
 
                     case "4":

@@ -8,15 +8,45 @@ namespace TaxCalculationService
     public class Program
     {
         private static string connectionString = @"Server=DESKTOP-4DG3M6E\SQLEXPRESS; Database = MunicipalityTax; Trusted_Connection=true;";
-        public static void Main()
+        public static void Main(string[] args)
         {
+            string municipality = args[0];
+            DateTime startDate = new DateTime();
+            try
+            {
+                startDate = DateTime.Parse(args[1]);
+            }
+            catch
+            {
+                Console.WriteLine("Start date is invalid");
+                return;
+            }
 
-            //  InsertTaxesFromFile();
-           // AskForTax("Vilnius", new DateTime(2016,01,01));
+            DateTime endDate = new DateTime();
+            try
+            {
+                if (!string.IsNullOrEmpty(args[2]))
+                    endDate = DateTime.Parse(args[2]);
+            }
+            catch
+            {
+                Console.WriteLine("End date is invalid");
+            }
 
+            DataTable resultTaxDt = ReturnTax(municipality, startDate, endDate);
+
+            foreach (DataRow taxRow in resultTaxDt.Rows)
+            {
+                Console.WriteLine("Municipality: " + taxRow["Municipality"].ToString() +
+                  "\r\nTax: " + taxRow["Tax"].ToString() +
+                  "\r\nStart date: " + taxRow["StartDate"].ToString() +
+                  "\r\nEnd date: " + taxRow["EndDate"].ToString());
+            }
+
+            Console.ReadLine();
         }
 
-        public static DataTable AskForTax(string municipality, DateTime startDate, DateTime endDate = new DateTime())
+        public static DataTable ReturnTax(string municipality, DateTime startDate, DateTime endDate = new DateTime())
         {
 
             string commandText = "SELECT * FROM Tax WHERE Municipality=@Municipality AND StartDate=@StartDate";
@@ -44,7 +74,6 @@ namespace TaxCalculationService
                         try
                         {
                             SqlDataAdapter dataAdapter = new SqlDataAdapter(command);
-                            // this will query your database and return the result to your datatable
                             dataAdapter.Fill(resultDt);
                         }
                         catch (SqlException ex)
@@ -57,7 +86,7 @@ namespace TaxCalculationService
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Can not open connection. " + ex.Message);
+                Console.WriteLine("Cannot open connection. " + ex.Message);
             }
             return null;
         }
@@ -83,43 +112,6 @@ namespace TaxCalculationService
             catch (Exception ex)
             {
                 Console.WriteLine("Can not open connection. " + ex.Message);
-            }
-        }
-
-        public static void InsertNewTax(string municipality, double tax, DateTime startDate, DateTime endDate)
-        {
-            if (string.IsNullOrEmpty(municipality))
-            {
-                Console.WriteLine("Error. Municipality is not provided");
-            }
-            else if (tax == 0)
-            {
-                Console.WriteLine("Error. Tax is not provided");
-            }
-            else
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    using (SqlCommand command = new SqlCommand())
-                    {
-                        string commandText = "INSERT INTO Tax (Municipality, Tax, StartDate, EndDate) VALUES (@Municipality, @Tax, @StartDate, @EndDate)";
-                        command.Connection = connection;
-                        command.CommandText = commandText;
-                        command.Parameters.AddWithValue("@Municipality", municipality);
-                        command.Parameters.AddWithValue("@Tax", tax);
-                        command.Parameters.AddWithValue("@StartDate", startDate);
-                        command.Parameters.AddWithValue("@EndDate", endDate);
-                        try
-                        {
-                            connection.Open();
-                            command.ExecuteNonQuery();
-                        }
-                        catch (SqlException ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
-                    }
-                }
             }
         }
 
@@ -161,5 +153,47 @@ namespace TaxCalculationService
             }
             return fileData;
         }
+
+        public static void InsertNewTax(string municipality, double tax, DateTime startDate, DateTime endDate)
+        {
+            if (string.IsNullOrEmpty(municipality))
+            {
+                Console.WriteLine("Error. Municipality is not provided");
+            }
+            else if (tax == 0)
+            {
+                Console.WriteLine("Error. Tax is not provided");
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand())
+                    {
+                        string commandText = "INSERT INTO Tax (Municipality, Tax, StartDate, EndDate) VALUES (@Municipality, @Tax, @StartDate, @EndDate)";
+                        command.Connection = connection;
+                        command.CommandText = commandText;
+                        command.Parameters.AddWithValue("@Municipality", municipality);
+                        command.Parameters.AddWithValue("@Tax", tax);
+                        command.Parameters.AddWithValue("@StartDate", startDate);
+                        if (endDate.Ticks != 0)
+                            command.Parameters.AddWithValue("@EndDate", endDate);
+                        else
+                            command.Parameters.AddWithValue("@EndDate", DBNull.Value);
+                        try
+                        {
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                        }
+                        catch (SqlException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 }

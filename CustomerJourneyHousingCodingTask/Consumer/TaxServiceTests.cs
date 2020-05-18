@@ -23,6 +23,17 @@ namespace Consumer
         }
 
         [Fact]
+
+        public async Task GetSpecificTax()
+        {
+            HttpClient apiClient = new HttpClient();
+            HttpResponseMessage apiResponse = await apiClient.GetAsync($"{baseUrl}/api/Tax/Klaipeda/2020-07-01/daily");
+            string response = await apiResponse.Content.ReadAsStringAsync();
+
+            Assert.Equal(1.1, double.Parse(response));
+        }
+
+        [Fact]
         public async Task AddTax()
         {
             Tax newTax = new Tax()
@@ -38,7 +49,6 @@ namespace Consumer
             HttpResponseMessage apiResponse = await apiClient.PostAsync($"{baseUrl}/api/Tax/New", stringContent);
 
             Assert.True(apiResponse.IsSuccessStatusCode);
-
         }
 
     }

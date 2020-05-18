@@ -26,7 +26,7 @@ namespace TaxService.Controllers
 
         [HttpGet]
         [Route("api/Tax/{municipality}/{date}/{sortby}")]
-        public double GetSpecificTax(string municipality, string date, string sortBy)
+        public string GetSpecificTax(string municipality, string date, string sortBy)
         {
             DateTime parsedDate = new DateTime();
             try
@@ -35,21 +35,26 @@ namespace TaxService.Controllers
             }
             catch
             {
-                return 38808;
+                return "Wrong date format. Needs to be ";
             }
 
             if (sortBy == "yearly" || sortBy == "monthly" || sortBy == "weekly" || sortBy == "daily")
-                return tax.GetSpecificTax(municipality, parsedDate, sortBy);
+                return tax.GetSpecificTax(municipality, parsedDate, sortBy).ToString();
             else
-                return 38808;
+                return "Wrong sort by parameter. Needs to be yearly, monthly, weekly or daily";
         }
-        /*{
-    "municipality": "Vilnius",
-    "taxAmount": 1.2,
-    "startDate": "2020-07-01",
-    "endDate": "2020-07-31",
-    "type": "monthly"
-  }*/
+
+
+        /*JSON format for POST method. Can be used in Postman 
+                 {
+            "municipality": "Vilnius",
+            "taxAmount": 1.2,
+            "startDate": "2020-07-01",
+            "endDate": "2020-07-31",
+            "type": "monthly"
+          }
+          */
+
         [HttpPost]
         [Route("api/Tax/New")]
         public string AddNewTax([FromBody]Tax newTax)
@@ -73,7 +78,6 @@ namespace TaxService.Controllers
                 if (ModelState.IsValid)
                 {
                     tax.AddNewTax(newTax);
-
                     return "New tax added";
                 }
             }

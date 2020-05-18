@@ -51,5 +51,16 @@ namespace Consumer
             Assert.True(apiResponse.IsSuccessStatusCode);
         }
 
+        [Fact]
+        public async Task AddTaxFromFile()
+        {
+
+            var stringContent = new StringContent(JsonConvert.SerializeObject(@"../../TaxData.csv"), Encoding.UTF8, "application/json");
+            HttpClient apiClient = new HttpClient();
+
+            HttpResponseMessage apiResponse = await apiClient.PostAsync($"{baseUrl}/api/Tax/AddFromFile", stringContent);
+
+            Assert.True(apiResponse.IsSuccessStatusCode);
+        }
     }
 }

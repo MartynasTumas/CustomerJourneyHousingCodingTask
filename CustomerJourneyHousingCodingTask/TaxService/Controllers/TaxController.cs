@@ -88,5 +88,13 @@ namespace TaxService.Controllers
 
             throw new Exception();
         }
+
+        [HttpPost]
+        [Route("api/Tax/AddFromFile")]
+        public string AddFromFile([FromBody]string path)
+        {
+            tax.AddFromFile(path);
+            return "";
+        }
     }
 }

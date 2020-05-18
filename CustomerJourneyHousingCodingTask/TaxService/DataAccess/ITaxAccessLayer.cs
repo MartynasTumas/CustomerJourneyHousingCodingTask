@@ -9,9 +9,8 @@ namespace TaxService.DataAccess
     public interface ITaxAccessLayer
     {
         List<Tax> GetAllTaxes();
-
-        double GetSpecificTax(string municipality, DateTime date, string sortBy);
-
+        string GetSpecificTax(string municipality, DateTime date, string sortBy);
         void AddNewTax(Tax newTax);
+        void AddFromFile(string path);
     }
 }

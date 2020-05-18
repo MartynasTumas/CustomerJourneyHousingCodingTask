@@ -1,7 +1,7 @@
 USE [MunicipalityTax]
 GO
 
-/****** Object:  Table [dbo].[Tax]    Script Date: 2020-05-16 00:42:16 ******/
+/****** Object:  Table [dbo].[Tax]    Script Date: 2020-05-18 12:08:23 ******/
 SET ANSI_NULLS ON
 GO
 
@@ -10,9 +10,11 @@ GO
 
 CREATE TABLE [dbo].[Tax](
 	[Municipality] [nvarchar](50) NOT NULL,
-	[Tax] [float] NOT NULL,
+	[TaxAmount] [float] NOT NULL,
 	[StartDate] [datetime] NOT NULL,
-	[EndDate] [datetime] NULL
+	[EndDate] [datetime] NULL,
+	[Type] [nvarchar](50) NOT NULL
 ) ON [PRIMARY]
 GO
+
 

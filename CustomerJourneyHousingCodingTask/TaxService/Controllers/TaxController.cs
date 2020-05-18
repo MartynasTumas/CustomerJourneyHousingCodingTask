@@ -9,8 +9,6 @@ using TaxService.Models;
 
 namespace TaxService.Controllers
 {
-    //  [Route("api/[controller]")]
-    //  [ApiController]
     public class TaxController : ControllerBase
     {
         ITaxAccessLayer tax;
@@ -24,6 +22,32 @@ namespace TaxService.Controllers
         public List<Tax> GetAllTaxes()
         {
             return tax.GetAllTaxes();
+        }
+
+        [HttpGet]
+        [Route("api/Tax/{municipality}/{date}/{sortby}")]
+        public double GetSpecificTax(string municipality, string date, string sortBy)
+        {
+            DateTime parsedDate = new DateTime();
+            try
+            {
+                parsedDate = DateTime.Parse(date);
+            }
+            catch
+            {
+                return 38808;
+            }
+
+            if (sortBy == "yearly" || sortBy == "monthly" || sortBy == "weekly" || sortBy == "daily")
+                return tax.GetSpecificTax(municipality, parsedDate, sortBy);
+            else
+                return 38808;
+        }
+
+        [HttpPost]
+        public void AddNewTax(string municipality, string taxAmount, string startDate, string endDate)
+        {
+
         }
     }
 }

@@ -39,6 +39,8 @@ namespace TaxService.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Type).HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

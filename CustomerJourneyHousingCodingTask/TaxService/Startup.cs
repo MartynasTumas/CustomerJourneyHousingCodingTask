@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TaxService.DataAccess;
 using TaxService.Models;
 
 namespace TaxService
@@ -29,6 +30,7 @@ namespace TaxService
         {
             services.AddDbContext<MunicipalityTaxContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("ConnectionString")));
+            services.AddScoped<ITaxAccessLayer, TaxAccessLayer>();
             services.AddControllers();
         }
 

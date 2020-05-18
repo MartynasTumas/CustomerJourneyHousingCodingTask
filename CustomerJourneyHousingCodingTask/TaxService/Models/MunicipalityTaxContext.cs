@@ -22,7 +22,7 @@ namespace TaxService.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-4DG3M6E\\SQLEXPRESS; Database = MunicipalityTax; Trusted_Connection=true;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-4DG3M6E\\SQLEXPRESS;Database=MunicipalityTax;Trusted_Connection=true;");
             }
         }
 
@@ -30,8 +30,6 @@ namespace TaxService.Models
         {
             modelBuilder.Entity<Tax>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.Property(e => e.EndDate).HasColumnType("datetime");
 
                 entity.Property(e => e.Municipality)
@@ -40,7 +38,9 @@ namespace TaxService.Models
 
                 entity.Property(e => e.StartDate).HasColumnType("datetime");
 
-                entity.Property(e => e.Type).HasMaxLength(50);
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -12,6 +12,6 @@ namespace TaxService.DataAccess
 
         double GetSpecificTax(string municipality, DateTime date, string sortBy);
 
-        void AddNewTax(string municipality, string taxAmount, string startDate, string endDate);
+        void AddNewTax(Tax newTax);
     }
 }

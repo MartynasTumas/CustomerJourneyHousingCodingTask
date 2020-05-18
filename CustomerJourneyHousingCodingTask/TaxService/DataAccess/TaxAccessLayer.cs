@@ -57,9 +57,9 @@ namespace TaxService.DataAccess
                         }
                     case "daily":
                         {
-                            Tax tax = context.Tax.Where(x => x.Type.ToLower()==sortBy.ToLower() && x.Municipality == municipality &&
+                            Tax tax = context.Tax.Where(x => x.Type.ToLower() == sortBy.ToLower() && x.Municipality == municipality &&
                             x.StartDate.DayOfYear == date.DayOfYear).FirstOrDefault();
-                            
+
                             if (tax != null)
                                 return tax.TaxAmount;
                             break;
@@ -74,9 +74,11 @@ namespace TaxService.DataAccess
             }
         }
 
-        public void AddNewTax(string municipality, string taxAmount, string startDate, string endDate)
+        public void AddNewTax(Tax newTax)
         {
-
+            Tax s = newTax;
+            context.Tax.Add(s);
+            context.SaveChanges();
         }
     }
 }

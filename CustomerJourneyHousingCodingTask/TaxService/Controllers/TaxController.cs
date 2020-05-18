@@ -43,11 +43,46 @@ namespace TaxService.Controllers
             else
                 return 38808;
         }
-
+        /*{
+    "municipality": "Vilnius",
+    "taxAmount": 1.2,
+    "startDate": "2020-07-01",
+    "endDate": "2020-07-31",
+    "type": "monthly"
+  }*/
         [HttpPost]
-        public void AddNewTax(string municipality, string taxAmount, string startDate, string endDate)
+        [Route("api/Tax/New")]
+        public string AddNewTax([FromBody]Tax newTax)
         {
 
+            if (string.IsNullOrEmpty(newTax.Municipality))
+                throw new Exception();
+
+
+            if (string.IsNullOrEmpty(newTax.Type))
+                throw new Exception();
+
+            if (newTax.StartDate.Ticks == 0)
+                throw new Exception();
+
+            if (newTax.TaxAmount == 0)
+                throw new Exception();
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    tax.AddNewTax(newTax);
+
+                    return "New tax added";
+                }
+            }
+            catch
+            {
+                throw;
+            }
+
+            throw new Exception();
         }
     }
 }
